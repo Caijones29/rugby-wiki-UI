@@ -1,38 +1,30 @@
-.App {
-  text-align: center;
+/* src/index.css or src/App.css */
+
+/* Basic reset and global styles */
+body {
+  margin: 0;
+  font-family: 'Lexend', 'Noto Sans', sans-serif; /* Ensure you've imported these fonts */
+  background-color: #101622;
+  color: #ffffff;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.app-container {
+  min-height: 100vh; /* Ensure the container takes at least the full viewport height */
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
 }
 
-.App-link {
-  color: #61dafb;
+.main-content {
+  flex-grow: 1; /* Allows main content to take up available space */
+  /* This padding-bottom needs to be adjusted based on the actual height of your navbar */
+  padding-bottom: 80px; /* Example: A safe value. Adjust as needed. */
+                       /* For mobile, if the navbar stacks, it might need more. */
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
+/* For very small screens where the navbar might stack and be taller */
+@media (max-width: 767px) {
+  .main-content {
+    /* If your mobile navbar is taller when stacked, increase this padding */
+    padding-bottom: 150px; /* Example: Adjust this value based on your mobile navbar's stacked height */
   }
 }

@@ -1,0 +1,111 @@
+/* src/components/layout/Navbar.css */
+
+/* Base Styles (Mobile First - applies to all screen sizes, but designed for small) */
+.navbar {
+  background-color: #1f2937;
+  padding: 0.75rem 1rem; /* Slightly reduced vertical padding for mobile */
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+
+  /* Styles for fixed bottom nav */
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  z-index: 1000;
+}
+
+.navbar-container {
+  display: flex;
+  flex-direction: column; /* Stack brand and nav-list vertically on small screens */
+  align-items: center;    /* Center them horizontally when stacked */
+  gap: 0.75rem;           /* Space between brand and nav-list */
+  padding: 0;
+  width: 100%;
+  max-width: 1280px; /* Apply max-width here for consistency, will be centered by margin auto */
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.navbar-brand {
+  color: #ffffff;
+  font-size: 1.25rem; /* Smaller font size for mobile brand */
+  font-weight: 700;
+  text-decoration: none;
+  transition: color 0.3s ease;
+  padding: 0.25rem 0;
+}
+
+.navbar-brand:hover {
+  color: #d1d5db;
+}
+
+.nav-list {
+  display: flex;
+    flex-direction: row; /* Layout nav items horizontally */
+    flex-wrap: nowrap;   /* Prevent items from wrapping to a new line */  list-style: none;
+  padding: 0;
+  margin: 0;
+  gap: 0.5rem; /* Space between stacked nav items */
+  width: 100%; /* Ensure it takes full width to allow items to center if needed */
+  justify-content: center; /* Center items horizontally when stacked */
+}
+
+.nav-item {
+  /* No margin-right for stacked items on mobile */
+}
+
+.nav-link {
+  color: #d1d5db;
+  font-size: 1rem; /* Smaller font size for mobile nav links */
+  text-decoration: none;
+  transition: color 0.3s ease;
+  padding: 0.25rem 0.5rem;
+  display: block;
+  text-align: center;
+}
+
+.nav-link:hover {
+  color: #ffffff;
+}
+
+.nav-link.active { /* Style for the active navigation link */
+  color: #ffffff;
+  font-weight: 500; /* Make active link slightly bolder */
+}
+
+
+/* Medium screens (e.g., tablets, 768px and up) */
+@media (min-width: 768px) {
+  .navbar {
+    padding: 1rem; /* Restore original padding */
+  }
+
+  .navbar-container {
+    flex-direction: row;        /* Layout brand and nav-list horizontally */
+    justify-content: space-between; /* Push brand to left, nav-list to right */
+    gap: 1rem;                  /* Adjust gap between brand and nav-list */
+  }
+
+  .navbar-brand {
+    font-size: 1.5rem; /* Restore original font size */
+    padding: 0;
+  }
+
+  .nav-list {
+    flex-direction: row; /* Layout nav items horizontally */
+    flex-wrap: nowrap;   /* Prevent items from wrapping to a new line */
+    gap: 0;              /* Reset gap, margin-right will handle spacing */
+    width: auto;         /* Allow nav-list to shrink to content width */
+  }
+
+  .nav-item:not(:last-child) {
+    margin-right: 1.5rem; /* Restore original space-x-6 equivalent */
+  }
+
+  .nav-link {
+    font-size: 1.125rem; /* Restore original font size */
+    padding: 0;
+    text-align: left;
+  }
+}

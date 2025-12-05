@@ -1,0 +1,139 @@
+/* src/components/FixtureCard.css */
+
+.fixture-card {
+  background-color: #1c1f27; /* Dark background for the card */
+  border-radius: 0.5rem; /* Rounded corners */
+  padding: 1rem;
+  margin-bottom: 1rem; /* Space between cards */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+  color: #ffffff; /* Default text color */
+}
+
+.fixture-card-header {
+  margin-bottom: 0.5rem;
+}
+
+.fixture-status {
+  font-size: 0.875rem; /* text-sm */
+  font-weight: 500; /* font-medium */
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  display: inline-block; /* So padding works */
+}
+
+.fixture-status.upcoming {
+  background-color: #285430; /* Greenish for upcoming */
+  color: #d1fae5;
+}
+
+.fixture-status.recent {
+  background-color: #3b3b3b; /* Grayish for recent */
+  color: #e5e7eb;
+}
+
+.fixture-card-body {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Pushes outer elements to edges, centers middle */
+  margin-bottom: 1rem;
+}
+
+.team-name-container {
+  flex: 1; /* Allows the name containers to take up available space */
+  display: flex; /* Use flex to potentially align logo and name if added */
+  align-items: center; /* Vertically center content if multiple items */
+  min-width: 0; /* Important for flex items with long content to prevent overflow */
+}
+
+.team-name-container.home {
+  justify-content: flex-start; /* Align home team name to the left */
+}
+
+.team-name-container.away {
+  justify-content: flex-end; /* Align away team name to the right */
+  text-align: right; /* Ensures text inside is right-aligned */
+}
+
+.scores-and-vs {
+  display: flex;
+  align-items: center;
+  justify-content: center; /* Centers the scores and 'vs' text */
+  gap: 0.75rem; /* Space between home score, vs, and away score */
+  min-width: fit-content; /* Prevents this section from shrinking too much */
+  padding: 0 0.5rem; /* Add some padding around the scores/vs */
+  flex-shrink: 0; /* Prevent the scores section from shrinking, giving priority to its content */
+}
+
+.team-logo {
+  width: 2.5rem; /* size-10 equivalent */
+  height: 2.5rem;
+  border-radius: 50%; /* Make it round */
+  object-fit: cover;
+  margin-right: 0.5rem; /* Space between logo and name */
+}
+
+.team-name {
+  font-size: 1.25rem; /* text-xl */
+  font-weight: 700; /* font-bold */
+  margin: 0;
+  white-space: nowrap; /* Keep on one line by default */
+  overflow: hidden;
+  text-overflow: ellipsis; /* Add ellipsis if name is too long */
+}
+
+.team-score {
+  font-size: 1.5rem; /* text-2xl */
+  font-weight: 900; /* font-black */
+  color: #fff;
+  margin: 0;
+}
+
+.vs {
+  font-size: 1.25rem; /* text-xl */
+  font-weight: 500;
+  color: #9da6b9; /* text-gray-400 */
+  margin: 0;
+}
+
+.fixture-card-footer {
+  text-align: center;
+  font-size: 0.875rem; /* text-sm */
+  color: #9da6b9; /* text-gray-400 */
+}
+
+.match-datetime {
+  margin: 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+.team-name-container {
+  flex-grow: 0.7;
+  justify-content: center; /* NEW: Centers the flex item (the h2 team-name) within its container */
+  text-align: center;   /* NEW: Centers the text content inside the h2 team-name */
+}
+
+  .team-name {
+    font-size: 1rem; /* Smaller team name on small screens */
+    white-space: normal; /* Allow team names to wrap on small screens */
+    overflow: hidden; /* Ensure wrapped content is visible */
+    text-overflow: clip; /* Remove ellipsis when wrapping */
+    line-height: 1.2; /* Adjust line height for wrapped text */
+    margin-bottom: 0.25rem; /* Add some vertical spacing if it wraps */
+  }
+  .team-score {
+    font-size: 1.25rem; /* Smaller score on small screens */
+  }
+  .vs {
+    font-size: 1rem;
+  }
+  .team-logo {
+    width: 2rem;
+    height: 2rem;
+  }
+
+  .scores-and-vs {
+    gap: 0.5rem; /* Reduce gap between scores/vs on small screens */
+    padding: 0 0.25rem; /* Reduce horizontal padding on small screens */
+  }
+}
