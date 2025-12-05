@@ -4,6 +4,7 @@ import './App.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/NavBar';
 import FixturesPage from './pages/FixturesPage';
+import TeamsPage from './pages/TeamsPage';
 
 function App() {
   return (
@@ -13,9 +14,7 @@ function App() {
             <Routes>
                 <Route path="/" element={<div />} />
                 <Route path="/fixtures" element={<FixturesPage></FixturesPage>} />
-                {/* <Route path="/teams" element={<TeamsPage />} />
-                <Route path="/about" element={<AboutPage />} /> */}
-                {/* Add more routes here */}
+                <Route path="/teams" element={<TeamsPage />} />
             </Routes>
         </Router>
     </div>

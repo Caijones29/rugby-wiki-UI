@@ -1,0 +1,24 @@
+/* src/components/FixtureCard.css */
+
+.fixture-card {
+  background-color: #1c1f27; /* Dark background for the card */
+  border-radius: 0.5rem; /* Rounded corners */
+  padding: 1rem;
+  margin-bottom: 1rem; /* Space between cards */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+  color: #ffffff; /* Default text color */
+}
+
+.team-name-main {
+  font-size: 1.5rem; /* Larger font size for the main name */
+  font-weight: 700; /* Bold */
+  margin: 0; /* Remove default margin from h2 */
+  line-height: 1.2; /* Adjust line height for better spacing */
+}
+
+.team-league-sub {
+  font-size: 0.9rem; /* Smaller font size for the league */
+  color: #9da6b9; /* Slightly subdued color, text-gray-400 equivalent */
+  margin-top: 0.25rem; /* Small space between name and league */
+  margin-bottom: 0; /* Remove default margin from p */
+}
