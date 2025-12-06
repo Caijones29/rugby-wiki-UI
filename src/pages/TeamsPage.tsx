@@ -1,4 +1,6 @@
-import React, { useEffect, useState, useCallback } from 'react';
+// src/pages/TeamsPage.tsx
+
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { fetchTeamsByLeagueAndYear } from '../api/teamService';
 import { fetchLeagues } from '../api/leagueService';
 import { Team } from '../types/Team';
@@ -7,18 +9,20 @@ import TeamCard from '../components/TeamCard';
 import './TeamsPage.css';
 
 const currentYear = new Date().getFullYear();
-const availableYears = Array.from({ length: 5 }, (_, i) => currentYear - 2 + i);
+// REMOVED: const availableYears = Array.from({ length: 5 }, (_, i) => currentYear - 2 + i);
 
 const TeamsPage: React.FC = () => {
-  const [teams, setTeams] = useState<Team[]>([]);
+  const [allTeams, setAllTeams] = useState<Team[]>([]);
   const [leagues, setLeagues] = useState<League[]>([]);
   const [loadingTeams, setLoadingTeams] = useState<boolean>(true);
   const [loadingLeagues, setLoadingLeagues] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   const [selectedLeagueId, setSelectedLeagueId] = useState<number | null>(null);
-  const [selectedYear, setSelectedYear] = useState<number>(currentYear);
+  // REMOVED: const [selectedYear, setSelectedYear] = useState<number>(currentYear);
+  const [searchTerm, setSearchTerm] = useState<string>('');
 
+  // Fetch leagues on component mount
   useEffect(() => {
     const getLeagues = async () => {
       setLoadingLeagues(true);
@@ -26,7 +30,10 @@ const TeamsPage: React.FC = () => {
         const fetchedLeagues = await fetchLeagues();
         setLeagues(fetchedLeagues);
         if (fetchedLeagues.length > 0) {
-          setSelectedLeagueId(fetchedLeagues[0].id);
+          const defaultLeague = fetchedLeagues.find(l => l.name === "English Gallagher Prem") ||
+                                fetchedLeagues.find(l => l.name === "United Rugby Championship") ||
+                                fetchedLeagues[0];
+          setSelectedLeagueId(defaultLeague.id);
         }
       } catch (err: any) {
         console.error("Error fetching leagues:", err);
@@ -38,64 +45,95 @@ const TeamsPage: React.FC = () => {
     getLeagues();
   }, []);
 
+  // Fetch teams based on selected league and the fixed currentYear
   const getTeams = useCallback(async () => {
     if (selectedLeagueId === null) {
-      setTeams([]);
+      setAllTeams([]);
       return;
     }
     setLoadingTeams(true);
     setError(null);
     try {
-      const data = await fetchTeamsByLeagueAndYear(selectedLeagueId, selectedYear);
-      setTeams(data);
+      // Use currentYear directly here
+      const data = await fetchTeamsByLeagueAndYear(selectedLeagueId, currentYear);
+      setAllTeams(data);
     } catch (err: any) {
-      console.error(`Error fetching teams for league ID ${selectedLeagueId} and year ${selectedYear}:`, err);
+      console.error(`Error fetching teams for league ID ${selectedLeagueId} and year ${currentYear}:`, err);
       setError(err.message || 'An unknown error occurred while fetching teams.');
     } finally {
       setLoadingTeams(false);
     }
-  }, [selectedLeagueId, selectedYear]);
+  }, [selectedLeagueId]); // Dependency now only on selectedLeagueId
 
+  // Trigger team fetch when selectedLeagueId changes
   useEffect(() => {
     getTeams();
   }, [getTeams]);
 
+  // Filter teams by search term
+  const filteredTeams = useMemo(() => {
+    if (!searchTerm) {
+      return allTeams;
+    }
+    const lowerCaseSearchTerm = searchTerm.toLowerCase();
+    return allTeams.filter(team =>
+      team.name.toLowerCase().includes(lowerCaseSearchTerm) ||
+      team.leagueName.toLowerCase().includes(lowerCaseSearchTerm)
+    );
+  }, [allTeams, searchTerm]);
+
+
   const selectedLeagueName = leagues.find(
     (league) => league.id === selectedLeagueId
-  )?.name || 'Select a League';
+  )?.name || 'All';
 
   const isLoading = loadingLeagues || loadingTeams;
 
-  const handleLeagueChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedLeagueId(Number(event.target.value));
-  };
-
   return (
     <div className="teams-page-container">
-      <h1>{selectedLeagueName} Teams - {selectedYear}</h1>
+      {/* Search Bar */}
+      <div className="search-bar-container">
+        <label className="search-input-label">
+          <div className="search-input-wrapper">
+            <input
+              className="search-input"
+              placeholder="Search for a team"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+        </label>
+      </div>
 
-      {loadingLeagues && <div className="loading-message">Loading leagues...</div>}
-      {error && <div className="error-message">Error: {error}</div>}
-
-      {!loadingLeagues && leagues.length > 0 && (
-        <div className="selector-group league-selector">
-          <h3 className="selector-title">Select League:</h3>
-          <select
-            className="league-dropdown"
-            value={selectedLeagueId || ''} // Use empty string if null, so it doesn't try to select an option with value 0
-            onChange={handleLeagueChange}
-            disabled={loadingLeagues}
+      {/* Filter Chips (Leagues) */}
+      {loadingLeagues ? (
+        <div className="loading-message">Loading leagues...</div>
+      ) : error ? (
+        <div className="error-message">Error: {error}</div>
+      ) : (
+        <div className="filter-chips-container">
+          {/* "All" chip */}
+          <div
+            className={`filter-chip ${selectedLeagueId === null ? 'active' : ''}`}
+            onClick={() => setSelectedLeagueId(null)}
           >
-            <option value="" disabled>-- Choose a League --</option> {/* Placeholder option */}
-            {leagues.map((league) => (
-              <option key={league.id} value={league.id}>
-                {league.name}
-              </option>
-            ))}
-          </select>
+            <p className="filter-chip-text">All</p>
+          </div>
+          {/* Other league chips */}
+          {leagues.map((league) => (
+            <div
+              key={league.id}
+              className={`filter-chip ${selectedLeagueId === league.id ? 'active' : ''}`}
+              onClick={() => setSelectedLeagueId(league.id)}
+            >
+              <p className="filter-chip-text">{league.name}</p>
+            </div>
+          ))}
         </div>
       )}
 
+      {/* REMOVED: Year Selector */}
+      {/*
       <div className="selector-group year-selector">
         <h3 className="selector-title">Select Year:</h3>
         <div className="button-list">
@@ -110,20 +148,24 @@ const TeamsPage: React.FC = () => {
           ))}
         </div>
       </div>
+      */}
 
-      {isLoading ? (
-        <div className="loading-message">Loading teams...</div>
-      ) : (
-        <div className="team-list">
-          {teams.length > 0 ? (
-            teams.map((team) => (
+      {/* Team List Section */}
+      <div className="team-list-section">
+        {isLoading ? (
+          <div className="loading-message">Loading teams...</div>
+        ) : error ? (
+          <div className="error-message">Error: {error}</div>
+        ) : filteredTeams.length > 0 ? (
+          <div className="team-list">
+            {filteredTeams.map((team) => (
               <TeamCard key={team.name} name={team.name} league={team.leagueName} />
-            ))
-          ) : (
-            <p className="no-items-message">No teams found for {selectedLeagueName} in {selectedYear}.</p>
-          )}
-        </div>
-      )}
+            ))}
+          </div>
+        ) : (
+          <p className="no-items-message">No teams found for the current selection.</p>
+        )}
+      </div>
     </div>
   );
 };
