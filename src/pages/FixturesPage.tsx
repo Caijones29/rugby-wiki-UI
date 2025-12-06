@@ -1,5 +1,3 @@
-// src/pages/FixturesPage.tsx
-
 import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import FixtureCard from '../components/FixtureCard';
 import { fetchFixturesByLeagueId } from '../api/fixtureService';
@@ -129,7 +127,7 @@ const FixturesPage: React.FC = () => {
           <div className="search-input-wrapper">
             <input
               className="search-input"
-              placeholder="Search for a team or league"
+              placeholder="Search for a team..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
@@ -137,47 +135,50 @@ const FixturesPage: React.FC = () => {
         </label>
       </div>
 
-      {/* Filter Chips (Leagues and Year) */}
-      {loadingLeagues ? (
-        <div className="loading-message">Loading leagues...</div>
-      ) : error ? (
-        <div className="error-message">Error: {error}</div>
-      ) : (
-        <div className="filter-chips-container">
-          {/* Year Dropdown (new style) */}
-          <div className="filter-chip year-dropdown-chip">
-            <select
-              className="year-dropdown"
-              value={selectedYear}
-              onChange={(e) => setSelectedYear(Number(e.target.value))}
-            >
-              {availableYears.map((year) => (
-                <option key={year} value={year}>
-                  {year}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {/* "All" chip (Optional, if your API supports fetching all leagues' fixtures without a specific ID) */}
-          <div
-            className={`filter-chip ${selectedLeagueId === null ? 'active' : ''}`}
-            onClick={() => setSelectedLeagueId(null)}
+      {/* NEW: Filter controls wrapper */}
+      <div className="filter-controls-wrapper">
+        {/* Year Dropdown (fixed) */}
+        <div className="filter-chip year-dropdown-chip">
+          <select
+            className="year-dropdown"
+            value={selectedYear}
+            onChange={(e) => setSelectedYear(Number(e.target.value))}
           >
-            <p className="filter-chip-text">All</p>
-          </div>
-          {/* Other league chips */}
-          {leagues.map((league) => (
-            <div
-              key={league.id}
-              className={`filter-chip ${selectedLeagueId === league.id ? 'active' : ''}`}
-              onClick={() => setSelectedLeagueId(league.id)}
-            >
-              <p className="filter-chip-text">{league.name}</p>
-            </div>
-          ))}
+            {availableYears.map((year) => (
+              <option key={year} value={year}>
+                {year}
+              </option>
+            ))}
+          </select>
         </div>
-      )}
+
+        {/* Filter Chips (Leagues - scrollable) */}
+        {loadingLeagues ? (
+          <div className="loading-message">Loading leagues...</div>
+        ) : error ? (
+          <div className="error-message">Error: {error}</div>
+        ) : (
+          <div className="filter-chips-scroll-container"> {/* NEW container for scrolling */}
+            {/* "All" chip */}
+            <div
+              className={`filter-chip ${selectedLeagueId === null ? 'active' : ''}`}
+              onClick={() => setSelectedLeagueId(null)}
+            >
+              <p className="filter-chip-text">All</p>
+            </div>
+            {/* Other league chips */}
+            {leagues.map((league) => (
+              <div
+                key={league.id}
+                className={`filter-chip ${selectedLeagueId === league.id ? 'active' : ''}`}
+                onClick={() => setSelectedLeagueId(league.id)}
+              >
+                <p className="filter-chip-text">{league.name}</p>
+              </div>
+            ))}
+          </div>
+        )}
+      </div> {/* End filter-controls-wrapper */}
 
       {/* Fixture List Section */}
       <div className="fixture-list-section">
