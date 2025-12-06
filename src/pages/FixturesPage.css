@@ -1,0 +1,214 @@
+/* Global styles for the page container */
+.fixtures-page-container {
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    background-color: #101622; /* dark:bg-background-dark */
+    font-family: 'Lexend', sans-serif; /* font-display */
+    color: #e0e0e0; /* Default text color for dark theme */
+    overflow-x: hidden;
+    padding-bottom: 2rem;
+}
+
+/* --- Search Bar Styles (Copied from TeamsPage.css) --- */
+.search-bar-container {
+    padding: 1rem;
+}
+
+.search-input-label {
+    display: flex;
+    flex-direction: column;
+    min-width: 160px;
+    height: 48px;
+    width: 100%;
+}
+
+.search-input-wrapper {
+    display: flex;
+    width: 100%;
+    flex: 1;
+    align-items: stretch;
+    border-radius: 0.5rem;
+    height: 100%;
+}
+
+.search-icon-container {
+    color: #9da6b9; /* dark:text-gray-500 */
+    display: flex;
+    border: none;
+    background-color: rgba(255, 255, 255, 0.05);
+    align-items: center;
+    justify-content: center;
+    padding-left: 1rem;
+    border-top-left-radius: 0.5rem;
+    border-bottom-left-radius: 0.5rem;
+    border-right: 0;
+}
+
+.search-icon-container .material-symbols-outlined {
+    font-size: 1.5rem; /* text-2xl */
+}
+
+.search-input {
+    flex: 1;
+    width: 100%;
+    min-width: 0;
+    resize: none;
+    overflow: hidden;
+    border-radius: 0.5rem;
+    color: #e0e0e0; /* dark:text-white */
+    outline: 0;
+    box-shadow: none;
+    border: none;
+    background-color: rgba(255, 255, 255, 0.05);
+    padding-left: 0.5rem;
+    padding-right: 1rem;
+    border-top-right-radius: 0.5rem;
+    border-bottom-right-radius: 0.5rem;
+    border-left: 0;
+    height: 100%;
+    font-size: 1rem;
+    font-weight: normal;
+    line-height: normal;
+}
+
+.search-input::placeholder {
+    color: #9da6b9; /* dark:placeholder:text-gray-500 */
+}
+
+/* --- Filter Chips (Leagues and Year) --- */
+.filter-chips-container {
+    display: flex;
+    gap: 0.75rem;
+    padding: 0.5rem 1rem;
+    overflow-x: auto;
+    width: 100%;
+    scrollbar-width: none; /* For Firefox */
+    -ms-overflow-style: none;  /* For IE and Edge */
+}
+
+.filter-chips-container::-webkit-scrollbar {
+    display: none; /* For Chrome, Safari, Opera */
+}
+
+.filter-chip {
+    display: flex;
+    height: 32px;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border-radius: 0.5rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    background-color: rgba(255, 255, 255, 0.05);
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.filter-chip:hover:not(.active) {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.filter-chip.active {
+    background-color: #135bec; /* bg-primary */
+}
+
+.filter-chip-text {
+    color: #e0e0e0; /* dark:text-white */
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: normal;
+}
+
+/* --- NEW Year Dropdown Chip Styles --- */
+.year-dropdown-chip {
+    padding-left: 0.75rem; /* Adjust padding for dropdown */
+    padding-right: 0.5rem; /* Adjust padding for dropdown */
+    position: relative; /* For custom arrow positioning */
+    overflow: hidden; /* Hide default dropdown arrow */
+    cursor: pointer;
+    /* Ensure it has the same background as other chips */
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.year-dropdown-chip:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.year-dropdown {
+    -webkit-appearance: none; /* Remove default browser styling for dropdown */
+    -moz-appearance: none;
+    appearance: none;
+    background: transparent;
+    border: none;
+    padding: 0;
+    margin: 0;
+    color: #e0e0e0; /* Match chip text color */
+    font-size: 0.875rem; /* Match chip text size */
+    font-weight: 500;
+    line-height: normal;
+    cursor: pointer;
+    outline: none; /* Remove outline on focus */
+    width: 100%; /* Take full width of its container */
+    height: 100%; /* Take full height of its container */
+    padding-right: 1.5rem; /* Make space for custom arrow */
+}
+
+.year-dropdown::-ms-expand {
+    display: none; /* Hide default arrow in IE/Edge */
+}
+
+.year-dropdown-chip .expand-icon {
+    position: absolute;
+    right: 0.25rem; /* Position custom arrow */
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none; /* Allow clicks to pass through to the select */
+    color: #e0e0e0; /* Match text color */
+    font-size: 1.2rem; /* Adjust size as needed */
+}
+
+/* --- Fixture List Section --- */
+.fixture-list-section {
+    padding-top: 1rem;
+}
+
+.fixture-list {
+    display: flex;
+    flex-direction: column;
+}
+
+/* --- Headers for Upcoming/Recent --- */
+h2 {
+    color: #ffffff;
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+    font-size: 1.8rem;
+    border-bottom: 1px solid #3a3d44;
+    padding-bottom: 0.5rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+/* --- Messages (Loading, Error, No Items) --- */
+.loading-message,
+.error-message,
+.no-items-message {
+    text-align: center;
+    margin-top: 2rem;
+    font-size: 1.1rem;
+    color: #9da6b9;
+    padding: 0 1rem;
+}
+
+.error-message {
+    color: #dc3545;
+    font-weight: bold;
+}
+
+/* Hide the default h1 title as per TeamsPage design */
+h1 {
+    display: none;
+}

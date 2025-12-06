@@ -2,18 +2,17 @@
 
 import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import FixtureCard from '../components/FixtureCard';
-import { fetchFixturesByLeagueId } from '../api/fixtureService'; // Use the updated function
+import { fetchFixturesByLeagueId } from '../api/fixtureService';
 import { fetchLeagues } from '../api/leagueService';
 import { Fixture } from '../types/Fixture';
 import { League } from '../types/League';
-
+import './FixturesPage.css'; // This will contain the page-level styling
 
 const currentYear = new Date().getFullYear();
-// Generate years from 2 years ago to 2 years in the future
-const availableYears = Array.from({ length: 5 }, (_, i) => currentYear - 2 + i);
+const availableYears = Array.from({ length: 7 }, (_, i) => 2020 + i);
 
 const FixturesPage: React.FC = () => {
-  const [allLeagueFixtures, setAllLeagueFixtures] = useState<Fixture[]>([]); // Stores ALL fixtures for selected league
+  const [allLeagueFixtures, setAllLeagueFixtures] = useState<Fixture[]>([]);
   const [leagues, setLeagues] = useState<League[]>([]);
   const [loadingFixtures, setLoadingFixtures] = useState<boolean>(true);
   const [loadingLeagues, setLoadingLeagues] = useState<boolean>(true);
@@ -21,6 +20,7 @@ const FixturesPage: React.FC = () => {
 
   const [selectedLeagueId, setSelectedLeagueId] = useState<number | null>(null);
   const [selectedYear, setSelectedYear] = useState<number>(currentYear);
+  const [searchTerm, setSearchTerm] = useState<string>('');
 
   // Effect to fetch leagues on component mount
   useEffect(() => {
@@ -30,7 +30,9 @@ const FixturesPage: React.FC = () => {
         const fetchedLeagues = await fetchLeagues();
         setLeagues(fetchedLeagues);
         if (fetchedLeagues.length > 0) {
-          setSelectedLeagueId(fetchedLeagues[0].id); // Set first league as default
+          // Set a preferred default league (e.g., "Six Nations") or fallback
+          const defaultLeague = fetchedLeagues.find(l => l.name === "Six Nations") || fetchedLeagues[0];
+          setSelectedLeagueId(defaultLeague.id);
         }
       } catch (err: any) {
         console.error("Error fetching leagues:", err);
@@ -42,7 +44,7 @@ const FixturesPage: React.FC = () => {
     getLeagues();
   }, []);
 
-  // Function to fetch ALL fixtures for the selected league (no year filter here)
+  // Function to fetch ALL fixtures for the selected league
   const fetchAllFixturesForSelectedLeague = useCallback(async () => {
     if (selectedLeagueId === null) {
       setAllLeagueFixtures([]);
@@ -53,15 +55,15 @@ const FixturesPage: React.FC = () => {
     setError(null);
 
     try {
-      const data = await fetchFixturesByLeagueId(selectedLeagueId); // Call the updated service function
-      setAllLeagueFixtures(data); // Store all fixtures for the league
+      const data = await fetchFixturesByLeagueId(selectedLeagueId);
+      setAllLeagueFixtures(data);
     } catch (err: any) {
       console.error(`Error fetching fixtures for league ID ${selectedLeagueId}:`, err);
       setError(err.message || 'An unknown error occurred while fetching fixtures.');
     } finally {
       setLoadingFixtures(false);
     }
-  }, [selectedLeagueId]); // Only re-run if selectedLeagueId changes
+  }, [selectedLeagueId]);
 
   // Effect to trigger fetching all fixtures for the selected league
   useEffect(() => {
@@ -69,123 +71,160 @@ const FixturesPage: React.FC = () => {
   }, [fetchAllFixturesForSelectedLeague]);
 
 
-  // Memoized filtered fixtures based on selectedYear
-  const yearFilteredFixtures = useMemo(() => {
-    return allLeagueFixtures.filter(fixture => {
+  // Memoized filtered fixtures based on selectedYear AND search term
+  const filteredFixtures = useMemo(() => {
+    let currentFixtures = allLeagueFixtures.filter(fixture => {
       const fixtureYear = new Date(fixture.datePlayed).getFullYear();
       return fixtureYear === selectedYear;
     });
-  }, [allLeagueFixtures, selectedYear]);
 
+    if (searchTerm) {
+      const lowerCaseSearchTerm = searchTerm.toLowerCase();
+      currentFixtures = currentFixtures.filter(fixture => {
+        // Lookup league name for filtering
+        const league = leagues.find(l => l.id === fixture.leagueId);
+        const fixtureLeagueName = league ? league.name : ''; // Fallback to empty string if not found
+
+        return (
+          fixture.home.toLowerCase().includes(lowerCaseSearchTerm) ||
+          fixture.away.toLowerCase().includes(lowerCaseSearchTerm) ||
+          fixtureLeagueName.toLowerCase().includes(lowerCaseSearchTerm)
+        );
+      });
+    }
+    return currentFixtures;
+  }, [allLeagueFixtures, selectedYear, searchTerm, leagues]);
 
   // Helper function to determine if a fixture is upcoming
   const isUpcoming = (fixture: Fixture): boolean => {
     const fixtureDate = new Date(fixture.datePlayed);
     const today = new Date();
-    // Compare dates only, ignore time for 'upcoming' classification
-    fixtureDate.setHours(0, 0, 0, 0);
-    today.setHours(0, 0, 0, 0);
+    fixtureDate.setHours(0, 0, 0, 0); // Normalize to start of day
+    today.setHours(0, 0, 0, 0); // Normalize to start of day
     return fixtureDate >= today;
   };
 
-  const upcomingFixtures = useMemo(() => yearFilteredFixtures.filter(isUpcoming), [yearFilteredFixtures]);
-  const recentFixtures = useMemo(() => yearFilteredFixtures
+  const upcomingFixtures = useMemo(() => filteredFixtures.filter(isUpcoming), [filteredFixtures]);
+  const recentFixtures = useMemo(() => filteredFixtures
     .filter(fixture => !isUpcoming(fixture))
     .sort((a,b) => new Date(b.datePlayed).getTime() - new Date(a.datePlayed).getTime()), // Sort recent by most recent first
-    [yearFilteredFixtures]
+    [filteredFixtures]
   );
 
-  // Get the name of the currently selected league for the title
   const selectedLeagueName = leagues.find(
     (league) => league.id === selectedLeagueId
-  )?.name || 'Select a League';
+  )?.name || 'All'; // Display 'All' if no specific league is selected via chip
 
   const isLoading = loadingLeagues || loadingFixtures;
 
-  // Handler for dropdown change
-  const handleLeagueChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedLeagueId(Number(event.target.value));
-  };
-
-
   return (
     <div className="fixtures-page-container">
-      <h1>{selectedLeagueName} Fixtures - {selectedYear}</h1>
 
-      {loadingLeagues && <div className="loading-message">Loading leagues...</div>}
-      {error && <div className="error-message">Error: {error}</div>}
+      <h1>Rugby Wiki</h1>
+      <h1 className="page-title">Fixtures & Results</h1>
 
-      {!loadingLeagues && leagues.length > 0 && (
-        <div className="selector-group league-selector">
-          <h3 className="selector-title">Select League:</h3>
-          <select
-            className="league-dropdown"
-            value={selectedLeagueId || ''}
-            onChange={handleLeagueChange}
-            disabled={loadingLeagues}
-          >
-            <option value="" disabled>-- Choose a League --</option>
-            {leagues.map((league) => (
-              <option key={league.id} value={league.id}>
-                {league.name}
-              </option>
-            ))}
-          </select>
-        </div>
-      )}
-
-      <div className="selector-group year-selector">
-        <h3 className="selector-title">Select Year:</h3>
-        <div className="button-list">
-          {availableYears.map((year) => (
-            <button
-              key={year}
-              className={`selector-button ${year === selectedYear ? 'active' : ''}`}
-              onClick={() => setSelectedYear(year)}
-            >
-              {year}
-            </button>
-          ))}
-        </div>
+      {/* Search Bar */}
+      <div className="search-bar-container">
+        <label className="search-input-label">
+          <div className="search-input-wrapper">
+            <input
+              className="search-input"
+              placeholder="Search for a team or league"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+        </label>
       </div>
 
-      {isLoading ? (
-        <div className="loading-message">Loading fixtures...</div>
+      {/* Filter Chips (Leagues and Year) */}
+      {loadingLeagues ? (
+        <div className="loading-message">Loading leagues...</div>
+      ) : error ? (
+        <div className="error-message">Error: {error}</div>
       ) : (
-        <>
-          <h2>Upcoming Matches</h2>
-          {upcomingFixtures.length > 0 ? (
-            upcomingFixtures.map(fixture => (
-              <FixtureCard
-                key={fixture.id}
-                homeTeam={fixture.home}
-                awayTeam={fixture.away}
-                dateTime={fixture.datePlayed}
-                homeScore={fixture.homeScore ? parseInt(fixture.homeScore, 10) : undefined}
-                awayScore={fixture.awayScore ? parseInt(fixture.awayScore, 10) : undefined}
-              />
-            ))
-          ) : (
-            <p className="no-fixtures-message">No upcoming matches for {selectedLeagueName} in {selectedYear}.</p>
-          )}
+        <div className="filter-chips-container">
+          {/* Year Dropdown (new style) */}
+          <div className="filter-chip year-dropdown-chip">
+            <select
+              className="year-dropdown"
+              value={selectedYear}
+              onChange={(e) => setSelectedYear(Number(e.target.value))}
+            >
+              {availableYears.map((year) => (
+                <option key={year} value={year}>
+                  {year}
+                </option>
+              ))}
+            </select>
+          </div>
 
-          <h2>Recent Results</h2>
-          {recentFixtures.length > 0 ? (
-            recentFixtures.map(fixture => (
-              <FixtureCard
-                key={fixture.id}
-                homeTeam={fixture.home}
-                awayTeam={fixture.away}
-                homeScore={fixture.homeScore ? parseInt(fixture.homeScore, 10) : undefined}
-                awayScore={fixture.awayScore ? parseInt(fixture.awayScore, 10) : undefined}
-                dateTime={fixture.datePlayed}
-              />
-            ))
-          ) : (
-            <p className="no-fixtures-message">No recent results for {selectedLeagueName} in {selectedYear}.</p>
-          )}
-        </>
+          {/* "All" chip (Optional, if your API supports fetching all leagues' fixtures without a specific ID) */}
+          <div
+            className={`filter-chip ${selectedLeagueId === null ? 'active' : ''}`}
+            onClick={() => setSelectedLeagueId(null)}
+          >
+            <p className="filter-chip-text">All</p>
+          </div>
+          {/* Other league chips */}
+          {leagues.map((league) => (
+            <div
+              key={league.id}
+              className={`filter-chip ${selectedLeagueId === league.id ? 'active' : ''}`}
+              onClick={() => setSelectedLeagueId(league.id)}
+            >
+              <p className="filter-chip-text">{league.name}</p>
+            </div>
+          ))}
+        </div>
       )}
+
+      {/* Fixture List Section */}
+      <div className="fixture-list-section">
+        {isLoading ? (
+          <div className="loading-message">Loading fixtures...</div>
+        ) : error ? (
+          <div className="error-message">Error: {error}</div>
+        ) : (
+          <>
+            <h2>Upcoming Matches</h2>
+            {upcomingFixtures.length > 0 ? (
+              <div className="fixture-list">
+                {upcomingFixtures.map(fixture => (
+                  <FixtureCard
+                    key={fixture.id}
+                    homeTeam={fixture.home}
+                    awayTeam={fixture.away}
+                    dateTime={fixture.datePlayed}
+                    homeScore={fixture.homeScore ? parseInt(fixture.homeScore, 10) : undefined}
+                    awayScore={fixture.awayScore ? parseInt(fixture.awayScore, 10) : undefined}
+                  />
+                ))}
+              </div>
+            ) : (
+              <p className="no-items-message">No upcoming matches for {selectedLeagueName} in {selectedYear}.</p>
+            )}
+
+            <h2>Recent Results</h2>
+            {recentFixtures.length > 0 ? (
+              <div className="fixture-list">
+                {recentFixtures.map(fixture => (
+                  <FixtureCard
+                    key={fixture.id}
+                    homeTeam={fixture.home}
+                    awayTeam={fixture.away}
+                    homeScore={fixture.homeScore ? parseInt(fixture.homeScore, 10) : undefined}
+                    awayScore={fixture.awayScore ? parseInt(fixture.awayScore, 10) : undefined}
+                    dateTime={fixture.datePlayed}
+                  />
+                ))}
+              </div>
+            ) : (
+              <p className="no-items-message">No recent results for {selectedLeagueName} in {selectedYear}.</p>
+            )}
+          </>
+        )}
+      </div>
     </div>
   );
 };
