@@ -1,7 +1,5 @@
-// src/api/teamService.ts
-import { Team } from '../types/Team'; // Import the Team interface
+import { Team, TeamStatistics } from '../types/Team'; // Import Team and the new TeamStatistics interface
 
-// IMPORTANT: Replace with your actual API endpoint if it differs
 const API_BASE_URL = 'https://rugby-wiki-backend-238f444127b7.herokuapp.com/api';
 
 /**
@@ -27,5 +25,24 @@ export const fetchTeamsByLeagueAndYear = async (leagueId: number, year: number):
   }
 };
 
-// The previous fetchTeamsByLeagueId and fetchAllTeams are removed as they
-// don't match the new API endpoint structure for fetching teams by year.
+/**
+ * Fetches detailed statistics for a specific team.
+ * @param teamName The name of the team for which to fetch statistics.
+ * @returns A promise that resolves to a TeamStatistics object.
+ */
+export const fetchTeamStatistics = async (teamName: string): Promise<TeamStatistics> => {
+  try {
+    const url = `${API_BASE_URL}/team-statistics/${teamName}`; // Encode teamName for URL safety
+    const response = await fetch(url);
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
+    }
+    const data: TeamStatistics = await response.json();
+    return data;
+  } catch (error) {
+    console.error(`Failed to fetch statistics for team "${teamName}":`, error);
+    throw error;
+  }
+};

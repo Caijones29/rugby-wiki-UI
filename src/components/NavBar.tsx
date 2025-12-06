@@ -1,6 +1,5 @@
-// src/components/layout/Navbar.tsx
 import React from 'react';
-import { Link, NavLink } from 'react-router-dom'; // Using NavLink for active states
+import { NavLink } from 'react-router-dom'; // Using NavLink for active states
 import './NavBar.css'; // Assuming you have a CSS file for styling
 const NavBar: React.FC = () => {
   return (

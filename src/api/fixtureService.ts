@@ -1,13 +1,10 @@
-// src/api/fixtureService.ts
-import { Fixture } from '../types/Fixture'; // Import the interface
+import { Fixture } from '../types/Fixture';
 
-// IMPORTANT: Replace with your actual API endpoint
-// Based on the example URL, the base URL seems to be the Heroku app URL.
 const API_BASE_URL = 'https://rugby-wiki-backend-238f444127b7.herokuapp.com/api';
 
 export const fetchFixtures = async (): Promise<Fixture[]> => {
   try {
-    const response = await fetch(`${API_BASE_URL}/fixtures`); // Original endpoint
+    const response = await fetch(`${API_BASE_URL}/fixtures`);
     if (!response.ok) {
       const errorText = await response.text();
       throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);

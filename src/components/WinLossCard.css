@@ -1,0 +1,60 @@
+/* src/components/WinLossCard.css */
+
+.win-loss-container {
+  display: flex; /* Arrange the child cards side-by-side */
+  gap: 1rem; /* Space between the win and loss cards */
+  justify-content: center; /* Center the cards if there's extra space */
+  margin-bottom: 1rem; /* Space below the entire win/loss section */
+  /* REMOVED: flex-wrap: wrap; - This will prevent stacking on small screens */
+  /* If content overflows, it will cause horizontal scrolling or overflow */
+}
+
+.card {
+  background-color: #1c1f27; /* Dark background for the card */
+  border-radius: 0.5rem; /* Rounded corners */
+  padding: 1rem 1.5rem; /* Adjusted padding for better look */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+  color: #ffffff; /* Default text color */
+  text-align: center; /* Center text inside each card */
+  flex: 1; /* Allow cards to grow and shrink */
+  min-width: 120px; /* Minimum width for each card */
+  max-width: 180px; /* Max width to prevent cards from getting too wide */
+  display: flex; /* Use flexbox for internal alignment */
+  flex-direction: column; /* Stack title and count vertically */
+  align-items: center; /* Center items horizontally within the card */
+}
+
+.card-title {
+  font-size: 1.25rem; /* Slightly smaller than team-name-main was */
+  font-weight: 600; /* Semi-bold */
+  margin: 0 0 0.5rem 0; /* Margin bottom to separate from count */
+  color: #9da6b9; /* Subdued color for the title */
+}
+
+.win-loss-count {
+  font-size: 2.5rem; /* Large font size for the numbers */
+  font-weight: 900; /* Extra bold */
+  color: #ffffff; /* White color for prominence */
+  line-height: 1; /* Adjust line height */
+  margin: 0;
+}
+
+/* Optional: Specific colors for win/loss if desired */
+.win-card .win-loss-count {
+  color: #28a745; /* Green for wins */
+}
+
+.loss-card .win-loss-count {
+  color: #dc3545; /* Red for losses */
+}
+
+/* REMOVED: Responsive adjustments for smaller screens that forced stacking */
+/* @media (max-width: 480px) {
+  .win-loss-container {
+    flex-direction: column;
+    align-items: center;
+  }
+  .card {
+    max-width: 90%;
+  }
+} */

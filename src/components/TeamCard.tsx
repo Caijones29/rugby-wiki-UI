@@ -1,8 +1,7 @@
-// src/components/TeamCard.tsx
 import React from 'react';
-import './FixtureCard.css'; // Import the CSS for styling the card
+import { useNavigate } from 'react-router-dom'; 
+import './FixtureCard.css'; 
 
-// Define the shape of the props that this component will accept
 interface TeamCardProps {
   name: string;
   league: string;
@@ -12,8 +11,15 @@ const TeamCard: React.FC<TeamCardProps> = ({
   name,
   league,
 }) => {
+  const navigate = useNavigate(); 
+
+  const handleCardClick = () => {
+    const teamUrlName = encodeURIComponent(name);
+    navigate(`/teams/stats/${teamUrlName}`);
+  };
+
   return (
-    <div className="fixture-card"> {/* Renamed from fixture-card-body in previous version */}
+    <div className="team-card" onClick={handleCardClick}>
       <h2 className="team-name-main">{name}</h2>
       <p className="team-league-sub">{league}</p>
     </div>

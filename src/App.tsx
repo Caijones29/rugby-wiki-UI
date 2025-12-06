@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/NavBar';
 import FixturesPage from './pages/FixturesPage';
 import TeamsPage from './pages/TeamsPage';
+import TeamStats from "./pages/TeamStats";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
                 <Route path="/" element={<div />} />
                 <Route path="/fixtures" element={<FixturesPage></FixturesPage>} />
                 <Route path="/teams" element={<TeamsPage />} />
+                <Route path="/teams/stats/:teamName" element={<TeamStats />} />
             </Routes>
         </Router>
     </div>

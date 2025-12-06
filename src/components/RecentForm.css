@@ -1,0 +1,37 @@
+/* src/components/RecentForm.css */
+
+.recent-form-container {
+  display: flex; /* Arrange results side-by-side */
+  gap: 0.5rem; /* Space between each result letter */
+  justify-content: space-around; /* Center the form results */
+  margin-top: 1rem;
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem; /* Large font size for the letters */
+}
+
+.form-result {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.2rem; /* Fixed width for each letter box */
+  height: 2.2rem; /* Fixed height for each letter box */
+  border-radius: 0.3rem; /* Slightly rounded corners */
+  font-weight: 700; /* Bold text */
+  color: #ffffff; /* White text color by default */
+  background-color: #3a3d44; /* Default background for results */
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+}
+
+/* Specific styles for Win, Loss, Draw */
+.form-result.w {
+  background-color: #28a745; /* Green for Win */
+}
+
+.form-result.l {
+  background-color: #dc3545; /* Red for Loss */
+}
+
+.form-result.d {
+  background-color: #ffc107; /* Yellow/Orange for Draw */
+  color: #333333; /* Darker text for better contrast on yellow */
+}
