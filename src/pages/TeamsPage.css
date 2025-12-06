@@ -5,96 +5,94 @@
   color: #e0e0e0; /* Light gray text */
 }
 
-.teams-page-container h1 {
+h1 {
+  text-align: center;
+  color: #ffffff;
+  margin-bottom: 2rem;
   font-size: 2.5rem;
-  color: #ffffff;
-  margin-bottom: 2rem;
-  text-align: center;
-}
-
-.teams-page-container h3 {
-  color: #ffffff;
-  margin-bottom: 2rem;
-  text-align: center;
 }
 
 .selector-group {
   margin-bottom: 2rem;
-  background-color: #2a2d34; /* Slightly lighter dark background */
-  padding: 1.5rem;
-  border-radius: 0.5rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  text-align: center;
 }
 
 .selector-title {
-  font-size: 1.2rem;
-  color: #ffffff;
-  margin-bottom: 1rem;
-  font-weight: 600;
+  font-size: 1.1rem;
+  color: #9da6b9; /* text-gray-400 */
+  margin-bottom: 0.8rem;
 }
 
 .button-list {
   display: flex;
-  flex-wrap: wrap; /* Allow buttons to wrap to the next line */
-  gap: 0.75rem; /* Space between buttons */
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
 }
 
 .selector-button {
-  padding: 0.75rem 1.25rem;
-  background-color: #3a3d44; /* Default button background */
-  color: #e0e0e0;
+  background-color: #3a3d44; /* Darker gray */
+  color: #ffffff;
   border: 1px solid #555;
   border-radius: 0.3rem;
+  padding: 0.6rem 1.2rem;
   cursor: pointer;
-  font-size: 1rem;
+  font-size: 0.9rem;
   transition: background-color 0.2s ease, border-color 0.2s ease;
-  flex-shrink: 0; /* Prevent buttons from shrinking too much */
 }
 
-.selector-button:hover {
-  background-color: #4a4d54;
-  border-color: #777;
+.selector-button:hover:not(.active) {
+  background-color: #50545c;
 }
 
 .selector-button.active {
-  background-color: #007bff; /* Highlight color for active button */
+  background-color: #007bff; /* Primary blue for active */
   border-color: #007bff;
-  color: #ffffff;
   font-weight: bold;
 }
 
-.team-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* Responsive grid */
-  gap: 1.5rem; /* Space between team cards */
+/* New styles for the dropdown */
+.league-dropdown {
+  width: 100%;
+  max-width: 300px; /* Limit width for better appearance */
+  padding: 0.75rem 1rem;
+  border-radius: 0.3rem;
+  border: 1px solid #555;
+  background-color: #3a3d44; /* Darker gray */
+  color: #ffffff;
+  font-size: 1rem;
+  cursor: pointer;
+  appearance: none; /* Remove default browser styling for select */
+  background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23ffffff%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13%205.1L146.2%20200.5%2018.3%2074.5a17.6%2017.6%200%200%200-25.3%200c-6.1%206.1-6.1%2016%200%2022.1l137.9%20137.9a17.6%2017.6%200%200%200%2025.3%200l137.9-137.9c6.1-6.1%206.1-16%200-22.1z%22%2F%3E%3C%2Fsvg%3E'); /* Custom arrow */
+  background-repeat: no-repeat;
+  background-position: right 0.7rem top 50%;
+  background-size: 0.65rem auto;
+  margin: 0 auto; /* Center the dropdown */
+  display: block; /* Make it a block element to center with margin: auto */
 }
 
-.loading-message,
-.error-message,
-.no-items-message {
-  text-align: center;
-  font-size: 1.1rem;
+.league-dropdown:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+
+.team-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1.5rem;
   margin-top: 2rem;
-  color: #9da6b9; /* text-gray-400 */
+}
+
+.loading-message, .error-message, .no-items-message {
+  text-align: center;
+  margin-top: 2rem;
+  font-size: 1.1rem;
+  color: #9da6b9;
 }
 
 .error-message {
-  color: #ff4d4d; /* Red for errors */
-}
-
-.back-button {
-  background-color: #007bff; /* Primary blue color */
-  color: white;
-  padding: 0.75rem 1.25rem;
-  border: none;
-  border-radius: 0.3rem;
-  cursor: pointer;
-  font-size: 1rem;
-  margin-bottom: 1.5rem; /* Space below the button */
-  display: inline-block; /* Allows margin-bottom to work */
-  transition: background-color 0.2s ease;
-}
-
-.back-button:hover {
-  background-color: #0056b3; /* Darker blue on hover */
+  color: #dc3545; /* Red for errors */
+  font-weight: bold;
 }
