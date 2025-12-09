@@ -50,3 +50,22 @@ export const fetchFixturesByLeagueId = async (leagueId: number): Promise<Fixture
     throw error;
   }
 };
+
+export const fetchAllFixtures = async (): Promise<Fixture[]> => {
+  try {
+    const url = `${API_BASE_URL}/fixtures`; // Corrected endpoint
+    const response = await fetch(url);
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
+    }
+    const data: Fixture[] = await response.json();
+    console.log("Fixtures", data);
+    return data;
+  } catch (error) {
+    console.error(`Failed to fetch all fixtures for league ID:`, error);
+    throw error;
+  }
+};
+
