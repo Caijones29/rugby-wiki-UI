@@ -6,6 +6,7 @@ import { Fixture } from '../types/Fixture';
 import { League } from '../types/League';
 import './FixturesPage.css';
 import LeagueFilter from "../components/LeagueFilter";
+import FixtureCardSkeleton from '../components/skeletons/FixtureCardSkeleton';
 
 const currentYear = new Date().getFullYear();
 const availableYears = Array.from({ length: 7 }, (_, i) => 2020 + i);
@@ -184,28 +185,46 @@ const FixturesPage: React.FC = () => {
         {/* Fixture List Section */}
         <div className="fixture-list-section">
           {isLoading ? (
-              <div className="loading-message">Loading fixtures...</div>
+              <>
+                {/*TODO Backend changes needed to fix upcoming matches functionality*/}
+
+                {/*<h2>Upcoming Matches</h2>*/}
+                {/*<div className="fixture-list">*/}
+                {/*  {Array.from({ length: 4 }).map((_, index) => (*/}
+                {/*      <FixtureCardSkeleton key={`upcoming-skel-${index}`} />*/}
+                {/*  ))}*/}
+                {/*</div>*/}
+
+                <h2>Recent Results</h2>
+                <div className="fixture-list">
+                  {Array.from({ length: 6 }).map((_, index) => (
+                      <FixtureCardSkeleton key={`recent-skel-${index}`} />
+                  ))}
+                </div>
+              </>
           ) : error ? (
+
               <div className="error-message">Error: {error}</div>
           ) : (
               <>
-                <h2>Upcoming Matches</h2>
-                {upcomingFixtures.length > 0 ? (
-                    <div className="fixture-list">
-                      {upcomingFixtures.map(fixture => (
-                          <FixtureCard
-                              key={fixture.id}
-                              homeTeam={fixture.home}
-                              awayTeam={fixture.away}
-                              dateTime={fixture.datePlayed}
-                              homeScore={fixture.homeScore ? parseInt(fixture.homeScore, 10) : undefined}
-                              awayScore={fixture.awayScore ? parseInt(fixture.awayScore, 10) : undefined}
-                          />
-                      ))}
-                    </div>
-                ) : (
-                    <p className="no-items-message">No upcoming matches for {selectedLeagueName} in {selectedYear}.</p>
-                )}
+                {/*TODO Backend changes needed to fix upcoming matches functionality*/}
+                {/*<h2>Upcoming Matches</h2>*/}
+                {/*{upcomingFixtures.length > 0 ? (*/}
+                {/*    <div className="fixture-list">*/}
+                {/*      {upcomingFixtures.map(fixture => (*/}
+                {/*          <FixtureCard*/}
+                {/*              key={fixture.id}*/}
+                {/*              homeTeam={fixture.home}*/}
+                {/*              awayTeam={fixture.away}*/}
+                {/*              dateTime={fixture.datePlayed}*/}
+                {/*              homeScore={fixture.homeScore ? parseInt(fixture.homeScore, 10) : undefined}*/}
+                {/*              awayScore={fixture.awayScore ? parseInt(fixture.awayScore, 10) : undefined}*/}
+                {/*          />*/}
+                {/*      ))}*/}
+                {/*    </div>*/}
+                {/*) : (*/}
+                {/*    <p className="no-items-message">No upcoming matches for {selectedLeagueName} in {selectedYear}.</p>*/}
+                {/*)}*/}
 
                 <h2>Recent Results</h2>
                 {recentFixtures.length > 0 ? (
