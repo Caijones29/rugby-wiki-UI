@@ -1,0 +1,68 @@
+/* Reuse real card base */
+.fixture-card.skeleton {
+    background-color: #1c1f27;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Generic skeleton block */
+.skeleton-box {
+    background: linear-gradient(
+            90deg,
+            rgba(255, 255, 255, 0.06) 0%,
+            rgba(255, 255, 255, 0.12) 40%,
+            rgba(255, 255, 255, 0.06) 80%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.4s ease-in-out infinite;
+    border-radius: 4px;
+}
+
+/* Sizes that match text */
+.team-name-skeleton {
+    width: 70%;
+    height: 1.25rem; /* ~ h2 team-name */
+}
+
+.score-skeleton {
+    width: 1.5rem;
+    height: 1.5rem; /* team-score */
+}
+
+.vs-skeleton {
+    width: 1.75rem;
+    height: 1.25rem;
+}
+
+.date-skeleton {
+    width: 8rem;
+    height: 0.875rem; /* footer text */
+    margin: 0 auto;
+}
+
+/* Animation */
+@keyframes shimmer {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+/* Mobile tweaks to match your media queries */
+@media (max-width: 600px) {
+    .team-name-skeleton {
+        width: 90%;
+        height: 1rem;
+    }
+
+    .score-skeleton {
+        width: 1.25rem;
+        height: 1.25rem;
+    }
+
+    .vs-skeleton {
+        width: 1.25rem;
+        height: 1rem;
+    }
+}
