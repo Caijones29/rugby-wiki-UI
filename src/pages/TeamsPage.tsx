@@ -28,15 +28,8 @@ const TeamsPage: React.FC = () => {
       try {
         const fetchedLeagues = await fetchLeagues();
         setLeagues(fetchedLeagues);
+        setSelectedLeagueId(0);
 
-        if (fetchedLeagues.length > 0) {
-          const defaultLeague =
-              fetchedLeagues.find(l => l.name === 'Internationals') ||
-              fetchedLeagues.find(l => l.name === 'United Rugby Championship') ||
-              fetchedLeagues[0];
-
-          setSelectedLeagueId(defaultLeague.id);
-        }
       } catch (err: any) {
         console.error('Error fetching leagues:', err);
         setError(err.message || 'An unknown error occurred while fetching leagues.');
