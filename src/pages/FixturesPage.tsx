@@ -237,6 +237,7 @@ const FixturesPage: React.FC = () => {
                               homeScore={fixture.homeScore ? parseInt(fixture.homeScore, 10) : undefined}
                               awayScore={fixture.awayScore ? parseInt(fixture.awayScore, 10) : undefined}
                               dateTime={fixture.datePlayed}
+                              leagueName={fixture.leagueName}
                           />
                       ))}
                     </div>

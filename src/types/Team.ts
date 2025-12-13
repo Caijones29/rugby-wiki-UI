@@ -14,7 +14,7 @@ export interface MatchResult {
   homeScore: number; // Scores are strings in the example
   id: number;
   leagueId: number;
-  leagueName: string | null; // Can be null based on example
+  leagueName: string; // Can be null based on example
 }
 
 // Interface for the full team statistics response

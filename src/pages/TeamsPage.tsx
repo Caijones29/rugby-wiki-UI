@@ -1,4 +1,3 @@
-// src/pages/TeamsPage.tsx
 import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { fetchTeams, fetchTeamsByLeagueAndYear } from '../api/teamService';
 import { fetchLeagues } from '../api/leagueService';

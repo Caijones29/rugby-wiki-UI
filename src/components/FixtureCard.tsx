@@ -1,43 +1,58 @@
 import React from 'react';
-import './FixtureCard.css'; // Import the CSS for styling the card
+import './FixtureCard.css';
+import {formatPrettyDate} from "../utils/formatDate";
 
 interface FixtureCardProps {
   homeTeam: string;
   awayTeam: string;
+  leagueName?: string;
   homeScore?: number;
   awayScore?: number;
   dateTime: string;
+  logoUrl?: string; // league or home team logo
 }
 
 const FixtureCard: React.FC<FixtureCardProps> = ({
-  homeTeam,
-  awayTeam,
-  homeScore,
-  awayScore,
-  dateTime,
-}) => {
+                                                   homeTeam,
+                                                   awayTeam,
+                                                   homeScore,
+                                                   awayScore,
+                                                   dateTime,
+                                                   logoUrl,
+                                                   leagueName
+                                                 }) => {
+  const isResult =
+      homeScore !== undefined && awayScore !== undefined;
 
   return (
-    <div className="fixture-card">
-      <div className="fixture-card-body">
-        <div className="team-name-container home">
-          <h2 className="team-name">{homeTeam}</h2>
-        </div>
+      <div className="fixture-row">
+        {/* Left logo */}
+        <div
+            className="fixture-logo"
+            style={
+              logoUrl
+                  ? { backgroundImage: `url(${logoUrl})` }
+                  : undefined
+            }
+        />
 
-        <div className="scores-and-vs">
-          <h2 className="team-score">{homeScore}</h2>
-          <div className="vs">{'vs'}</div>
-          <h2 className="team-score">{awayScore}</h2>
-        </div>
+        {/* Right text content */}
+        <div className="fixture-content">
+          <p className="fixture-title">
+            {isResult
+                ? `${homeTeam} ${homeScore} - ${awayScore} ${awayTeam}`
+                : `${homeTeam} vs. ${awayTeam}`}
+          </p>
 
-        <div className="team-name-container away">
-          <h2 className="team-name">{awayTeam}</h2>
+          <div>
+            <p className="fixture-subtitle">
+              {formatPrettyDate(dateTime)} / {leagueName}
+            </p>
+
+          </div>
+
         </div>
       </div>
-      <div className="fixture-card-footer">
-        <h3 className="match-datetime">{dateTime}</h3>
-      </div>
-    </div>
   );
 };
 

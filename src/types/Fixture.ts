@@ -5,6 +5,7 @@ export interface Fixture {
   datePlayed: string;
   home: string;
   homeScore: string;
+  leagueName: string;
   id: number;
   leagueId: number;
 }
