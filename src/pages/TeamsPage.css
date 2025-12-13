@@ -129,49 +129,35 @@
     line-height: normal;
 }
 
-/* REMOVED: Year Selector styles */
-/*
-.selector-group.year-selector {
-    margin-top: 2rem;
-    margin-bottom: 1.5rem;
-    text-align: center;
+/* Skeleton chip – matches filter-chip styling */
+.skeleton-chip {
+    height: 32px;
+    min-width: 96px;
+    max-width: 160px;
+    flex-shrink: 0;
+
+    border-radius: 0.5rem;
+    background: linear-gradient(
+            90deg,
+            rgba(255, 255, 255, 0.04) 0%,
+            rgba(255, 255, 255, 0.08) 40%,
+            rgba(255, 255, 255, 0.04) 80%
+    );
+    background-size: 200% 100%;
+
+    animation: chip-skeleton-shimmer 1.6s ease-in-out infinite;
+    pointer-events: none;
+}
+@keyframes chip-skeleton-shimmer {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
 }
 
-.selector-title {
-    font-size: 1.1rem;
-    color: #9da6b9;
-    margin-bottom: 0.8rem;
-}
 
-.button-list {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 0.5rem;
-    padding: 0 1rem;
-}
-
-.selector-button {
-    background-color: #3a3d44;
-    color: #ffffff;
-    border: 1px solid #555;
-    border-radius: 0.3rem;
-    padding: 0.6rem 1.2rem;
-    cursor: pointer;
-    font-size: 0.9rem;
-    transition: background-color 0.2s ease, border-color 0.2s ease;
-}
-
-.selector-button:hover:not(.active) {
-    background-color: #50545c;
-}
-
-.selector-button.active {
-    background-color: #135bec;
-    border-color: #135bec;
-    font-weight: bold;
-}
-*/
 
 /* --- Team List Section --- */
 .team-list-section {
