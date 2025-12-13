@@ -5,6 +5,7 @@ import { fetchLeagues } from '../api/leagueService';
 import { Fixture } from '../types/Fixture';
 import { League } from '../types/League';
 import './FixturesPage.css';
+import LeagueFilter from "../components/LeagueFilter";
 
 const currentYear = new Date().getFullYear();
 const availableYears = Array.from({ length: 7 }, (_, i) => 2020 + i);
@@ -169,32 +170,15 @@ const FixturesPage: React.FC = () => {
             </select>
           </div>
 
-          {/* Filter Chips (Leagues - scrollable) */}
-          {loadingLeagues ? (
-              <div className="loading-message">Loading leagues...</div>
-          ) : error ? (
-              <div className="error-message">Error: {error}</div>
-          ) : (
-              <div className="filter-chips-scroll-container">
-                {/* "All" chip */}
-                <div
-                    className={`filter-chip ${selectedLeagueId === null ? 'active' : ''}`}
-                    onClick={() => setSelectedLeagueId(null)}
-                >
-                  <p className="filter-chip-text">All</p>
-                </div>
-                {/* Other league chips */}
-                {leagues.map((league) => (
-                    <div
-                        key={league.id}
-                        className={`filter-chip ${selectedLeagueId === league.id ? 'active' : ''}`}
-                        onClick={() => setSelectedLeagueId(league.id)}
-                    >
-                      <p className="filter-chip-text">{league.name}</p>
-                    </div>
-                ))}
-              </div>
-          )}
+          <LeagueFilter
+              leagues={leagues}
+              selectedLeagueId={selectedLeagueId}
+              loading={loadingLeagues}
+              error={error}
+              onSelectLeague={setSelectedLeagueId}
+              containerClassName="filter-chips-scroll-container"
+          />
+
         </div> {/* End filter-controls-wrapper */}
 
         {/* Fixture List Section */}

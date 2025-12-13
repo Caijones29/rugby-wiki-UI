@@ -7,9 +7,10 @@ import { Team } from '../types/Team';
 import { League } from '../types/League';
 import TeamCard from '../components/TeamCard';
 import './TeamsPage.css';
+import {wait} from "@testing-library/user-event/dist/utils";
+import LeagueFilter from "../components/LeagueFilter";
 
 const currentYear = new Date().getFullYear();
-// REMOVED: const availableYears = Array.from({ length: 5 }, (_, i) => currentYear - 2 + i);
 
 const TeamsPage: React.FC = () => {
   const [allTeams, setAllTeams] = useState<Team[]>([]);
@@ -45,38 +46,29 @@ const TeamsPage: React.FC = () => {
     getLeagues();
   }, []);
 
-  // Fetch teams based on selected league and the fixed currentYear
   const getTeams = useCallback(async () => {
     setLoadingTeams(true);
     setError(null);
 
-    if (selectedLeagueId === null) {
-      const data = await fetchTeams();
-      setAllTeams(data);
-
-      try {
+    try {
+      if (selectedLeagueId === null) {
         const data = await fetchTeams();
         setAllTeams(data);
-      } catch (err: any) {
-        console.error(`Error fetching teams`, err);
-        setError(err.message || 'An unknown error occurred while fetching teams.');
-      } finally {
-        setLoadingTeams(false);
-        return;
+      } else {
+        const data = await fetchTeamsByLeagueAndYear(
+            selectedLeagueId,
+            currentYear
+        );
+        setAllTeams(data);
       }
-    }
-
-    try {
-      // Use currentYear directly here
-      const data = await fetchTeamsByLeagueAndYear(selectedLeagueId, currentYear);
-      setAllTeams(data);
     } catch (err: any) {
-      console.error(`Error fetching teams for league ID ${selectedLeagueId} and year ${currentYear}:`, err);
+      console.error('Error fetching teams:', err);
       setError(err.message || 'An unknown error occurred while fetching teams.');
     } finally {
       setLoadingTeams(false);
     }
-  }, [selectedLeagueId]); // Dependency now only on selectedLeagueId
+  }, [selectedLeagueId]);
+
 
   // Trigger team fetch when selectedLeagueId changes
   useEffect(() => {
@@ -119,49 +111,13 @@ const TeamsPage: React.FC = () => {
       </div>
 
       {/* Filter Chips (Leagues) */}
-      {loadingLeagues ? (
-        <div className="loading-message">Loading leagues...</div>
-      ) : error ? (
-        <div className="error-message">Error: {error}</div>
-      ) : (
-        <div className="filter-chips-container">
-          {/* "All" chip */}
-          <div
-            className={`filter-chip ${selectedLeagueId === null ? 'active' : ''}`}
-            onClick={() => setSelectedLeagueId(null)}
-          >
-            <p className="filter-chip-text">All</p>
-          </div>
-          {/* Other league chips */}
-          {leagues.map((league) => (
-            <div
-              key={league.id}
-              className={`filter-chip ${selectedLeagueId === league.id ? 'active' : ''}`}
-              onClick={() => setSelectedLeagueId(league.id)}
-            >
-              <p className="filter-chip-text">{league.name}</p>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {/* REMOVED: Year Selector */}
-      {/*
-      <div className="selector-group year-selector">
-        <h3 className="selector-title">Select Year:</h3>
-        <div className="button-list">
-          {availableYears.map((year) => (
-            <button
-              key={year}
-              className={`selector-button ${year === selectedYear ? 'active' : ''}`}
-              onClick={() => setSelectedYear(year)}
-            >
-              {year}
-            </button>
-          ))}
-        </div>
-      </div>
-      */}
+      <LeagueFilter
+          leagues={leagues}
+          selectedLeagueId={selectedLeagueId}
+          loading={loadingLeagues}
+          error={error}
+          onSelectLeague={setSelectedLeagueId}
+      />
 
       {/* Team List Section */}
       <div className="team-list-section">
