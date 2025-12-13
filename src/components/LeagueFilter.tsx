@@ -39,7 +39,7 @@ const LeagueFilter: React.FC<LeagueFilterChipsProps> = ({
             {/* All chip */}
             <div
                 className={`filter-chip ${selectedLeagueId === null ? 'active' : ''}`}
-                onClick={() => onSelectLeague(null)}
+                onClick={() => onSelectLeague(0)}
             >
                 <p className="filter-chip-text">All</p>
             </div>
