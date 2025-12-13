@@ -1,14 +1,13 @@
 // src/pages/TeamsPage.tsx
-
 import React, { useEffect, useState, useCallback, useMemo } from 'react';
-import {fetchTeams, fetchTeamsByLeagueAndYear} from '../api/teamService';
+import { fetchTeams, fetchTeamsByLeagueAndYear } from '../api/teamService';
 import { fetchLeagues } from '../api/leagueService';
 import { Team } from '../types/Team';
 import { League } from '../types/League';
 import TeamCard from '../components/TeamCard';
+import TeamCardSkeleton from '../components/skeletons/TeamCardSkeleton';
+import LeagueFilter from '../components/LeagueFilter';
 import './TeamsPage.css';
-import {wait} from "@testing-library/user-event/dist/utils";
-import LeagueFilter from "../components/LeagueFilter";
 
 const currentYear = new Date().getFullYear();
 
@@ -20,83 +19,77 @@ const TeamsPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
 
   const [selectedLeagueId, setSelectedLeagueId] = useState<number | null>(null);
-  // REMOVED: const [selectedYear, setSelectedYear] = useState<number>(currentYear);
   const [searchTerm, setSearchTerm] = useState<string>('');
 
-  // Fetch leagues on component mount
+  // Fetch leagues on mount
   useEffect(() => {
     const getLeagues = async () => {
       setLoadingLeagues(true);
       try {
         const fetchedLeagues = await fetchLeagues();
         setLeagues(fetchedLeagues);
+
         if (fetchedLeagues.length > 0) {
-          const defaultLeague = fetchedLeagues.find(l => l.name === "Internationals") ||
-                                fetchedLeagues.find(l => l.name === "United Rugby Championship") ||
-                                fetchedLeagues[0];
+          const defaultLeague =
+              fetchedLeagues.find(l => l.name === 'Internationals') ||
+              fetchedLeagues.find(l => l.name === 'United Rugby Championship') ||
+              fetchedLeagues[0];
+
           setSelectedLeagueId(defaultLeague.id);
         }
       } catch (err: any) {
-        console.error("Error fetching leagues:", err);
+        console.error('Error fetching leagues:', err);
         setError(err.message || 'An unknown error occurred while fetching leagues.');
       } finally {
         setLoadingLeagues(false);
       }
     };
+
     getLeagues();
   }, []);
 
+  // Fetch teams whenever selectedLeagueId changes
   const getTeams = useCallback(async () => {
+    if (selectedLeagueId === null) return;
+
     setLoadingTeams(true);
+    setAllTeams([]); // Clear previous teams immediately
     setError(null);
 
     try {
-      if(selectedLeagueId === null){
-        setAllTeams([]);
-        return;
-      }
-      if (selectedLeagueId === 0) {
-        const data = await fetchTeams();
-        setAllTeams(data);
+      let data: Team[] = [];
+      if (selectedLeagueId === 0 || selectedLeagueId === null) {
+        // "All" teams
+        data = await fetchTeams();
       } else {
-        const data = await fetchTeamsByLeagueAndYear(
-            selectedLeagueId,
-            currentYear
-        );
-        setAllTeams(data);
+        data = await fetchTeamsByLeagueAndYear(selectedLeagueId, currentYear);
       }
+
+      setAllTeams(data);
     } catch (err: any) {
       console.error('Error fetching teams:', err);
       setError(err.message || 'An unknown error occurred while fetching teams.');
+      setAllTeams([]);
     } finally {
       setLoadingTeams(false);
     }
   }, [selectedLeagueId]);
 
-
-  // Trigger team fetch when selectedLeagueId changes
   useEffect(() => {
     getTeams();
   }, [getTeams]);
 
   // Filter teams by search term
   const filteredTeams = useMemo(() => {
-    if (!searchTerm) {
-      return allTeams;
-    }
-    const lowerCaseSearchTerm = searchTerm.toLowerCase();
-    return allTeams.filter(team =>
-      team.name.toLowerCase().includes(lowerCaseSearchTerm) ||
-      team.leagueName.toLowerCase().includes(lowerCaseSearchTerm)
+    if (!searchTerm) return allTeams;
+    const lowerSearch = searchTerm.toLowerCase();
+    return allTeams.filter(
+        t => t.name.toLowerCase().includes(lowerSearch) || t.leagueName.toLowerCase().includes(lowerSearch)
     );
   }, [allTeams, searchTerm]);
 
-
-  const selectedLeagueName = leagues.find(
-    (league) => league.id === selectedLeagueId
-  )?.name || 'All';
-
-  const isLoading = loadingLeagues || loadingTeams;
+  // Determine if skeletons should show
+  const showSkeleton = loadingLeagues || loadingTeams || allTeams.length === 0;
 
   return (
       <div className="teams-page-container">
@@ -108,7 +101,7 @@ const TeamsPage: React.FC = () => {
                   className="search-input"
                   placeholder="Search for a team"
                   value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
+                  onChange={e => setSearchTerm(e.target.value)}
               />
             </div>
           </label>
@@ -125,14 +118,22 @@ const TeamsPage: React.FC = () => {
 
         {/* Team List Section */}
         <div className="team-list-section">
-          {isLoading ? (
-              <div className="loading-message">Loading teams...</div>
+          {showSkeleton ? (
+              <div className="team-list">
+                {Array.from({ length: 5 }).map((_, i) => (
+                    <TeamCardSkeleton key={i} />
+                ))}
+              </div>
           ) : error ? (
               <div className="error-message">Error: {error}</div>
           ) : filteredTeams.length > 0 ? (
               <div className="team-list">
-                {filteredTeams.map((team) => (
-                    <TeamCard key={team.name} name={team.name} league={team.leagueName} />
+                {filteredTeams.map(team => (
+                    <TeamCard
+                        key={`${team.leagueId}-${team.name}`} // <- Unique key per league + team
+                        name={team.name}
+                        league={team.leagueName}
+                    />
                 ))}
               </div>
           ) : (
