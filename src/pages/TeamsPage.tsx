@@ -1,7 +1,7 @@
 // src/pages/TeamsPage.tsx
 
 import React, { useEffect, useState, useCallback, useMemo } from 'react';
-import { fetchTeamsByLeagueAndYear } from '../api/teamService';
+import {fetchTeams, fetchTeamsByLeagueAndYear} from '../api/teamService';
 import { fetchLeagues } from '../api/leagueService';
 import { Team } from '../types/Team';
 import { League } from '../types/League';
@@ -30,7 +30,7 @@ const TeamsPage: React.FC = () => {
         const fetchedLeagues = await fetchLeagues();
         setLeagues(fetchedLeagues);
         if (fetchedLeagues.length > 0) {
-          const defaultLeague = fetchedLeagues.find(l => l.name === "English Gallagher Prem") ||
+          const defaultLeague = fetchedLeagues.find(l => l.name === "Internationals") ||
                                 fetchedLeagues.find(l => l.name === "United Rugby Championship") ||
                                 fetchedLeagues[0];
           setSelectedLeagueId(defaultLeague.id);
@@ -47,12 +47,25 @@ const TeamsPage: React.FC = () => {
 
   // Fetch teams based on selected league and the fixed currentYear
   const getTeams = useCallback(async () => {
-    if (selectedLeagueId === null) {
-      setAllTeams([]);
-      return;
-    }
     setLoadingTeams(true);
     setError(null);
+
+    if (selectedLeagueId === null) {
+      const data = await fetchTeams();
+      setAllTeams(data);
+
+      try {
+        const data = await fetchTeams();
+        setAllTeams(data);
+      } catch (err: any) {
+        console.error(`Error fetching teams`, err);
+        setError(err.message || 'An unknown error occurred while fetching teams.');
+      } finally {
+        setLoadingTeams(false);
+        return;
+      }
+    }
+
     try {
       // Use currentYear directly here
       const data = await fetchTeamsByLeagueAndYear(selectedLeagueId, currentYear);

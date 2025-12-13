@@ -26,6 +26,27 @@ export const fetchTeamsByLeagueAndYear = async (leagueId: number, year: number):
 };
 
 /**
+ * Fetches a list of all teams.
+ * @returns A promise that resolves to an array of Team objects.
+ */
+export const fetchTeams = async (): Promise<Team[]> => {
+  try {
+    const url = `${API_BASE_URL}/teams`;
+    const response = await fetch(url);
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
+    }
+    const data: Team[] = await response.json();
+    return data;
+  } catch (error) {
+    console.error(`Failed to fetch teams for league ID:`, error);
+    throw error;
+  }
+};
+
+/**
  * Fetches detailed statistics for a specific team.
  * @param teamName The name of the team for which to fetch statistics.
  * @returns A promise that resolves to a TeamStatistics object.
