@@ -89,7 +89,7 @@ const TeamsPage: React.FC = () => {
   }, [allTeams, searchTerm]);
 
   // Determine if skeletons should show
-  const showSkeleton = loadingLeagues || loadingTeams || allTeams.length === 0;
+  const showSkeleton = loadingLeagues || loadingTeams;
 
   return (
       <div className="teams-page-container">
